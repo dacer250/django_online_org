@@ -16,19 +16,17 @@ class CourseAdmin(object):
 
 
 class LessonAdmin(object):
-    list_display = ['course','name','add_time']
-    search_fields = ['course','name',]
-    list_filter =['course','name','add_time']
-
-
-xadmin.site.register(Lesson, LessonAdmin)
-xadmin.site.register(Course, CourseAdmin)
+    list_display = ['course', 'name', 'add_time']
+    search_fields = ['course', 'name', ]
+    list_filter = ['course', 'name', 'add_time']
 
 
 class VideoAdmin(object):
-    list_display = ['lesson','name','add_time']
-    search_fields = ['lesson','name',]
-    list_filter = ['lesson','name','add_time']
+    list_display = ['lesson', 'name', 'add_time']
+    search_fields = ['lesson', 'name', ]
+    list_filter = ['lesson', 'name', 'add_time']
 
 
 xadmin.site.register(Video, VideoAdmin)
+xadmin.site.register(Lesson, LessonAdmin)
+xadmin.site.register(Course, CourseAdmin)
