@@ -4,7 +4,7 @@ import xadmin
 __author__ = 'lihao'
 __date__ = '2017/2/12 22:24'
 
-from .models import Course, Lesson, Video
+from .models import Course, Lesson, Video,CourseResource
 
 
 class CourseAdmin(object):
@@ -27,6 +27,12 @@ class VideoAdmin(object):
     list_filter = ['lesson', 'name', 'add_time']
 
 
+class CourseResourceAdmin(object):
+    list_display = ['course','name','download','add_time']
+    search_fields = ['course','name','download']
+    list_filter = ['course','name','download','add_time']
+
 xadmin.site.register(Video, VideoAdmin)
 xadmin.site.register(Lesson, LessonAdmin)
 xadmin.site.register(Course, CourseAdmin)
+xadmin.site.register(CourseResource,CourseResourceAdmin)
