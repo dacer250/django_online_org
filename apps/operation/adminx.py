@@ -8,7 +8,7 @@ from .models import CourseComments,UserAsk,UserCourse,UserFavorite,UserMessage
 
 class UserAskAdmin(object):
     list_display = ['name','mobile','course_name','add_time',]
-    search_fields = [['name','mobile','course_name',]]
+    search_fields = ['name','mobile','course_name',]
     list_filter = ['name','mobile','course_name','add_time',]
 
 class CourseCommentsAdmin(object):
