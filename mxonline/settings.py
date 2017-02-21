@@ -43,9 +43,10 @@ INSTALLED_APPS = [
     'operation',
     'organization',
     'xadmin',
-    'crispy_forms'
+    'crispy_forms',
+    'captcha',
 ]
-AUTHENTICATION_BACKENDS =(
+AUTHENTICATION_BACKENDS = (
     'users.views.CustomBackend',
 )
 AUTH_USER_MODEL = 'users.UserProfile'
@@ -60,7 +61,6 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 
 ROOT_URLCONF = 'mxonline.urls'
 
@@ -132,5 +132,12 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
+
+
+EMAIL_HOST = 'smtp.163.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'koeelio@163.com'
+EMAIL_HOST_PASSWORD = 'koeelio182348'
+EMAIL_USE_TLS = False
+EMAIL_FROM = 'koeelio@163.com'
