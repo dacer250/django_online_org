@@ -76,6 +76,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.core.context_processors.media'
             ],
         },
     },
@@ -141,3 +142,13 @@ EMAIL_HOST_USER = 'koeelio@163.com'
 EMAIL_HOST_PASSWORD = 'koeelio182348'
 EMAIL_USE_TLS = False
 EMAIL_FROM = 'koeelio@163.com'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+PAGINATION_SETTINGS = {
+    'PAGE_RANGE_DISPLAYED': 5,
+    'MARGIN_PAGES_DISPLAYED': 2,
+
+    'SHOW_FIRST_PAGE_WHEN_INVALID': True,
+}
