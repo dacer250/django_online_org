@@ -65,7 +65,7 @@
                                 </dt>
                                 <dd>
                                     <div class="clearfix">
-                                        <a href="org-detail-homepage.html">
+                                        <a href="{% url 'org:org_home' org.id %}">
                                             <h1>{{ org.name }}</h1>
                                             <div class="pic fl">
 
@@ -77,9 +77,9 @@
                                         </a>
                                     </div>
                                     <ul class="cont">
-                                        <li class="first"><p class="pic9">课程数：<span>1</span></p>
+                                        <li class="first"><p class="pic9">课程数：<span>{{ org.course_nums }}</span></p>
                                             <p class="c7">学习人数：<span>1000</span></p></li>
-                                        <li class="c8" style="padding-left:18px;">北京市海淀区中关村北大街</li>
+                                        <li class="c8" style="padding-left:18px;">{{ org.address }}</li>
                                         <li class="pic10" style="padding-left:18px;">经典课程：
 
                                             <a href="/diary/19/">c语言基础入门</a>
