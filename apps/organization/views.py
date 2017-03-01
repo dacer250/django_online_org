@@ -62,5 +62,20 @@ class AddUserAskView(View):
             name_dict = {'status': 'success'}
             return HttpResponse(json.dumps(name_dict), content_type='application/json')
         else:
-            name_dict = {'status':'fail','msg':'添加出错'}
+            name_dict = {'status': 'fail', 'msg': '添加出错'}
             return HttpResponse(json.dumps(name_dict), content_type='application/json')
+
+
+class OrgHomeView(View):
+    """
+    org home page
+    """
+
+    def get(self, request, org_id):
+        course = CourseOrg.objects.get(id=int(org_id))
+        all_courses = course.course_set.all()[:3]
+        all_teacher = course.teacher_set.all()[:2]
+        return render(request, 'org-detail-homepage.html', {'all_course': all_courses,
+                                                            'all_teacher': all_teacher,
+                                                            'courseOrg':course
+                                                            })
