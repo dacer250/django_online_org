@@ -72,10 +72,59 @@ class OrgHomeView(View):
     """
 
     def get(self, request, org_id):
-        course = CourseOrg.objects.get(id=int(org_id))
-        all_courses = course.course_set.all()[:3]
-        all_teacher = course.teacher_set.all()[:2]
+        current_page = 'home'
+        course_org = CourseOrg.objects.get(id=int(org_id))
+        all_courses = course_org.course_set.all()[:3]
+        all_teacher = course_org.teacher_set.all()[:2]
         return render(request, 'org-detail-homepage.html', {'all_course': all_courses,
                                                             'all_teacher': all_teacher,
-                                                            'courseOrg':course
+                                                            'course_org': course_org,
+                                                            'current_page': current_page,
                                                             })
+
+
+class OrgCourseView(View):
+    """
+    org course page
+    """
+
+    def get(self, request, org_id):
+        current_page = 'course'
+        course_org = CourseOrg.objects.get(id=int(org_id))
+        all_courses = course_org.course_set.all()
+
+        return render(request, 'org-detail-course.html', {'all_course': all_courses,
+                                                          'course_org': course_org,
+                                                          'current_page': current_page,
+                                                          })
+
+
+class OrgDescView(View):
+    """
+    org home page
+    """
+
+    def get(self, request, org_id):
+        current_page = 'desc'
+        course_org = CourseOrg.objects.get(id=int(org_id))
+
+        return render(request, 'org-detail-desc.html', {
+            'course_org': course_org,
+            'current_page': current_page,
+        })
+
+
+class OrgTeacherView(View):
+    """
+    org home page
+    """
+
+    def get(self, request, org_id):
+        current_page = 'teacher'
+        course_org = CourseOrg.objects.get(id=int(org_id))
+        all_teacher = course_org.teacher_set.all()
+        return render(request, 'org-detail-teachers.html', {
+            'course_org': course_org,
+            'all_teacher': all_teacher,
+            'current_page': current_page,
+        })
