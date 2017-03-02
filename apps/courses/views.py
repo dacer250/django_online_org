@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views.generic import View
 from pure_pagination import Paginator, PageNotAnInteger
 
-from courses.models import Course
+from courses.models import Course, CourseResource
 from operation.models import UserFavorite
 
 
@@ -59,3 +59,12 @@ class CourseDetailView(View):
                                                       'has_fav_org': has_fav_org,
                                                       'has_fav_course': has_fav_course,
                                                       })
+
+
+class CourseInfoView(View):
+    def get(self, request, course_id):
+        course = Course.objects.get(id=int(course_id))
+        all_resources = CourseResource.objects.filter(course=course)
+        return render(request, "course-video.html", {"course": course,
+                                                     "all_resources": all_resources,
+                                                     })
