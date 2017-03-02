@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from datetime import datetime
 
 from django.db import models
+
 from  organization.models import CourseOrg
 
 # Create your models here.
@@ -20,10 +21,21 @@ class Course(models.Model):
     image = models.ImageField(upload_to="course/%Y/%m", verbose_name=u'封面')
     click_nums = models.IntegerField(default=0, verbose_name=u'点击数')
     add_time = models.DateTimeField(default=datetime.now, verbose_name=u'添加时间')
+    tag = models.CharField(default='', verbose_name='标签', max_length=10)
+    category = models.CharField(max_length=20, verbose_name='课程类别', default='')
 
     class Meta:
         verbose_name = u'课程'
         verbose_name_plural = verbose_name
+
+    def get_chapter_nums(self):
+        return self.lesson_set.all().count()
+
+    def get_learn_user(self):
+        return self.usercourse_set.all()[:5]
+
+    def get_teacher_nums(self):
+        return self.tea
 
     def __unicode__(self):
         return '{}'.format(self.name)

@@ -27,7 +27,7 @@ class OrgView(View):
         category = request.GET.get('ct', '')
         if category:
             all_org = all_org.filter(category=category)
-        # 课程机构分页
+
         org_num = all_org.count()
         # 学生人数排序
         sort = request.GET.get('sort', "")
@@ -36,6 +36,7 @@ class OrgView(View):
                 all_org = all_org.order_by("-students")
             elif sort == 'course_nums':
                 all_org = all_org.order_by("-course_nums")
+        # 课程机构分页
         try:
             page = request.GET.get('page', 1)
         except PageNotAnInteger:
@@ -61,10 +62,14 @@ class AddUserAskView(View):
         if user_ask_form.is_valid():
             user_ask = user_ask_form.save(commit=True)
             name_dict = {'status': 'success'}
-            return HttpResponse(json.dumps(name_dict), content_type='application/json')
+            return HttpResponse(json.dumps(name_dict),
+                                content_type='application/json'
+                                )
         else:
             name_dict = {'status': 'fail', 'msg': '添加出错'}
-            return HttpResponse(json.dumps(name_dict), content_type='application/json')
+            return HttpResponse(json.dumps(name_dict),
+                                content_type='application/json'
+                                )
 
 
 class OrgHomeView(View):
@@ -77,16 +82,19 @@ class OrgHomeView(View):
         course_org = CourseOrg.objects.get(id=int(org_id))
         has_fav = False
         if request.user.is_authenticated():
-            if UserFavorite.objects.filter(user=request.user, fav_id=course_org.id, fav_type=2):
+            if UserFavorite.objects.filter(user=request.user,
+                                           fav_id=course_org.id,
+                                           fav_type=2):
                 has_fav = True
         all_courses = course_org.course_set.all()[:3]
         all_teacher = course_org.teacher_set.all()[:2]
-        return render(request, 'org-detail-homepage.html', {'all_course': all_courses,
-                                                            'all_teacher': all_teacher,
-                                                            'course_org': course_org,
-                                                            'current_page': current_page,
-                                                            'has_fav': has_fav,
-                                                            })
+        return render(request, 'org-detail-homepage.html',
+                      {'all_course': all_courses,
+                       'all_teacher': all_teacher,
+                       'course_org': course_org,
+                       'current_page': current_page,
+                       'has_fav': has_fav,
+                       })
 
 
 class OrgCourseView(View):
@@ -99,15 +107,19 @@ class OrgCourseView(View):
         course_org = CourseOrg.objects.get(id=int(org_id))
         has_fav = False
         if request.user.is_authenticated():
-            if UserFavorite.objects.filter(user=request.user, fav_id=course_org.id, fav_type=2):
+            if UserFavorite.objects.filter(
+                    user=request.user,
+                    fav_id=course_org.id,
+                    fav_type=2):
                 has_fav = True
         all_courses = course_org.course_set.all()
 
-        return render(request, 'org-detail-course.html', {'all_course': all_courses,
-                                                          'course_org': course_org,
-                                                          'current_page': current_page,
-                                                          'has_fav': has_fav,
-                                                          })
+        return render(request, 'org-detail-course.html',
+                      {'all_course': all_courses,
+                       'course_org': course_org,
+                       'current_page': current_page,
+                       'has_fav': has_fav,
+                       })
 
 
 class OrgDescView(View):
@@ -120,7 +132,9 @@ class OrgDescView(View):
         course_org = CourseOrg.objects.get(id=int(org_id))
         has_fav = False
         if request.user.is_authenticated():
-            if UserFavorite.objects.filter(user=request.user, fav_id=course_org.id, fav_type=2):
+            if UserFavorite.objects.filter(user=request.user,
+                                           fav_id=course_org.id,
+                                           fav_type=2):
                 has_fav = True
         return render(request, 'org-detail-desc.html', {
             'course_org': course_org,
@@ -139,7 +153,9 @@ class OrgTeacherView(View):
         course_org = CourseOrg.objects.get(id=int(org_id))
         has_fav = False
         if request.user.is_authenticated():
-            if UserFavorite.objects.filter(user=request.user, fav_id=course_org.id, fav_type=2):
+            if UserFavorite.objects.filter(user=request.user,
+                                           fav_id=course_org.id,
+                                           fav_type=2):
                 has_fav = True
         all_teacher = course_org.teacher_set.all()
         return render(request, 'org-detail-teachers.html', {
@@ -158,14 +174,22 @@ class AddFavView(View):
         if not request.user.is_authenticated():
             # 判断用户状态
             name_dict = {'status': 'fail', 'msg': '用户未登录'}
-            return HttpResponse(json.dumps(name_dict), content_type='application/json')
+            return HttpResponse(json.dumps(name_dict),
+                                content_type='application/json'
+                                )
 
-        exist_records = UserFavorite.objects.filter(user=request.user, fav_id=int(fav_id), fav_type=int(fav_type))
+        exist_records = UserFavorite.objects.filter(user=request.user,
+                                                    fav_id=int(fav_id),
+                                                    fav_type=int(fav_type)
+                                                    )
         if exist_records:
             # if用户存在，则表示用户取消收藏
             exist_records.delete()
             name_dict = {'status': 'success', 'msg': '收藏'}
-            return HttpResponse(json.dumps(name_dict), content_type='application/json')
+            return HttpResponse(
+                                json.dumps(name_dict),
+                                content_type='application/json'
+                                )
         else:
             user_fav = UserFavorite()
             if int(fav_id) > 0 and int(fav_type) > 0:
@@ -174,7 +198,11 @@ class AddFavView(View):
                 user_fav.fav_type = int(fav_type)
                 user_fav.save()
                 name_dict = {'status': 'success', 'msg': '已收藏'}
-                return HttpResponse(json.dumps(name_dict), content_type='application/json')
+                return HttpResponse(json.dumps(name_dict),
+                                    content_type='application/json'
+                                    )
             else:
                 name_dict = {'status': 'fail', 'msg': '收藏出错'}
-                return HttpResponse(json.dumps(name_dict), content_type='application/json')
+                return HttpResponse(json.dumps(name_dict),
+                                    content_type='application/json'
+                                    )
