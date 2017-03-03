@@ -25,6 +25,9 @@ class Course(models.Model):
     add_time = models.DateTimeField(default=datetime.now, verbose_name=u'添加时间')
     tag = models.CharField(default='', verbose_name='标签', max_length=10)
     category = models.CharField(max_length=20, verbose_name='课程类别', default='')
+    need_know = models.CharField(max_length=300,verbose_name=u'须知',default='')
+    teacher_tell = models.CharField(max_length=300,verbose_name=u'须知公告',default='')
+
 
     class Meta:
         verbose_name = u'课程'

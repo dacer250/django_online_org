@@ -61,6 +61,8 @@ class CourseDetailView(View):
                                                       })
 
 
+class
+
 class CourseInfoView(View):
     def get(self, request, course_id):
         course = Course.objects.get(id=int(course_id))
