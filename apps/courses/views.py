@@ -1,10 +1,13 @@
 # coding=utf-8
+import json
+
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import View
 from pure_pagination import Paginator, PageNotAnInteger
 
 from courses.models import Course, CourseResource
-from operation.models import UserFavorite
+from operation.models import UserFavorite, CourseComments
 
 
 class CourseListView(View):
@@ -61,8 +64,6 @@ class CourseDetailView(View):
                                                       })
 
 
-class
-
 class CourseInfoView(View):
     def get(self, request, course_id):
         course = Course.objects.get(id=int(course_id))
@@ -70,3 +71,42 @@ class CourseInfoView(View):
         return render(request, "course-video.html", {"course": course,
                                                      "all_resources": all_resources,
                                                      })
+
+
+class CommentView(View):
+    def get(self, request, course_id):
+        course = Course.objects.get(id=int(course_id))
+        all_resources = CourseResource.objects.filter(course=course)
+        all_comments = CourseComments.objects.all()
+        return render(request, "course-comment.html", {
+            "course": course,
+            "course_resources": all_resources,
+            "all_comments": all_comments,
+        })
+
+
+class AddCommentView(View):
+    def post(self, request):
+        if not request.user.is_authenticated():
+            name_dict = {'status': 'fail', 'msg': "未登录！"}
+            return HttpResponse(json.dumps(name_dict),
+                                content_type='application/json'
+                                )
+        course_id = request.POST.get('course_id', 0)
+        comments = request.POST.get('comments', '')
+        if course_id > 0 and comments:
+            course_comments = CourseComments()
+            course = Course.objects.get(id=int(course_id))
+            course_comments.course = course
+            course_comments.comments = comments
+            course_comments.user = request.user
+            course_comments.save()
+            name_dict = {'status': 'success', 'msg': '添加成功'}
+            return HttpResponse(json.dumps(name_dict),
+                                content_type='application/json'
+                                )
+        else:
+            name_dict = {'status': 'fail', 'msg': '添加失败'}
+            return HttpResponse(json.dumps(name_dict),
+                                content_type='application/json'
+                                )
