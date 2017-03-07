@@ -13,4 +13,6 @@ urlpatterns = [
     url(r'^info/(?P<course_id>\d+)/$', CourseInfoView.as_view(), name='course_info'),
     url(r'^comment/(?P<course_id>\d+)/$', CommentView.as_view(), name='course_comment'),
     url(r'^add_comment/$', AddCommentView.as_view(), name='add_comment'),
+    url(r'^play/(?P<course_id>\d+)/$', CommentView.as_view(),name='course_play'),
+
 ]

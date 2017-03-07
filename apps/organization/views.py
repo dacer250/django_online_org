@@ -6,9 +6,10 @@ from django.shortcuts import render
 from django.views.generic import View
 from pure_pagination import Paginator, PageNotAnInteger
 
+from courses.models import Course
 from operation.models import UserFavorite
 from organization.form import UserAskForm
-from organization.models import CityDict, CourseOrg
+from organization.models import CityDict, CourseOrg, Teacher
 
 
 class OrgView(View):
@@ -42,7 +43,7 @@ class OrgView(View):
         except PageNotAnInteger:
             page = 1
 
-        p = Paginator(all_org, 3, request=request)
+        p = Paginator(all_org, 1, request=request)
 
         orgs = p.page(page)
 
@@ -206,3 +207,51 @@ class AddFavView(View):
                 return HttpResponse(json.dumps(name_dict),
                                     content_type='application/json'
                                     )
+
+
+class TeacherListView(View):
+    def get(self, request):
+        all_teacher = Teacher.objects.all()
+        sort = request.GET.get('sort', "")
+        if sort:
+            if sort == 'hot':
+                all_teacher = all_teacher.order_by("-click_nums")
+
+        sort_teacher = Teacher.objects.all().order_by("-click_nums")[:3]
+
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+
+        p = Paginator(all_teacher, 2, request=request)
+
+        teachers = p.page(page)
+
+        return render(request, 'teachers-list.html',
+                      dict(all_teacher=teachers, sort=sort,
+                           sort_teacher=sort_teacher,
+                           )
+                      )
+
+
+class TeacherDetailView(View):
+    def get(self, request, teacher_id):
+        teacher = Teacher.objects.get(id=int(teacher_id))
+        teacher.click_nums+=1
+        teacher.save()
+        has_teacher_faved = False
+        if UserFavorite.objects.filter(user=request.user,fav_type=3,fav_id=teacher.id):
+            has_teacher_faved =True
+        if UserFavorite.objects.filter(user=request.user,fav_type=2,fav_id=teacher.org.id):
+            has_teacher_faved =True
+
+        all_courses = Course.objects.filter(teachers=teacher)
+        sort_teacher = Teacher.objects.all().order_by("-click_nums")[:3]
+        return render(request, 'teacher-detail.html',
+                      dict(teacher=teacher,
+                           all_courses=all_courses,
+                           sort_teacher=sort_teacher,
+                           has_teacher_faved=has_teacher_faved
+                           )
+                      )
