@@ -1,6 +1,7 @@
 # coding=utf-8
 import json
 
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import View
@@ -16,6 +17,14 @@ class CourseListView(View):
         all_course = Course.objects.all().order_by('-add_time')
 
         hot_courses = Course.objects.all().order_by('-click_nums')[:2]
+        search_keywords = request.GET.get('keywords', '')
+        if search_keywords:
+            all_course = all_course.filter(
+                Q(name__icontains=search_keywords) |
+                Q(desc__icontains=search_keywords) |
+                Q(detail__icontains=search_keywords)
+            )
+
         # 课程机构分页
         sort = request.GET.get('sort', "")
         if sort:

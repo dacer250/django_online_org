@@ -1,6 +1,7 @@
 # coding=utf-8
 import json
 
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import View
@@ -20,6 +21,12 @@ class OrgView(View):
         hot_org = all_org.order_by('-click_nums')[:3]
         # 城市
         all_city = CityDict.objects.all()
+        search_keywords = request.GET.get('keywords', '')
+        if search_keywords:
+            all_org = all_org.filter(
+                Q(name__icontains=search_keywords) |
+                Q(desc__icontains=search_keywords)
+            )
         # 城市筛选
         city_id = request.GET.get('city', '')
         if city_id:
@@ -212,6 +219,11 @@ class AddFavView(View):
 class TeacherListView(View):
     def get(self, request):
         all_teacher = Teacher.objects.all()
+        search_keywords = request.GET.get('keywords', '')
+        if search_keywords:
+            all_teacher = all_teacher.filter(
+                Q(name__icontains=search_keywords)
+            )
         sort = request.GET.get('sort', "")
         if sort:
             if sort == 'hot':

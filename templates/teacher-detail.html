@@ -43,7 +43,7 @@
                             </div>
                             </dt>
                             <dd>
-                                <a href="/">
+                                <a href="{% url 'org:teacher_detail' teacher.id %}">
                                     <h1>{{ teacher.name }}<span
                                             class="key picbig">金牌讲师</span></h1>
                                 </a>
@@ -143,13 +143,12 @@
                             {% for foo in sort_teacher %}
                                 <dl class="des">
                                     {#                                   todo order num#}
-                                    <span class="num fl">{{ foo.index }}</span>
-                                    <a href="/org/teacher/detail/2/">
+                                    <span class="num fl">{{ forloop.counter }}</span>
+                                    <a href="/">
                                         <dt>
                                             <img width="50" height="50"
                                                  class="scrollLoading"
-                                                 src="
-                                                         {{ MEDIA_URL }}{{ foo.image }}"/>
+                                                 src="{{ MEDIA_URL }}{{ foo.image }}"/>
                                         </dt>
                                     </a>
                                     <dd>

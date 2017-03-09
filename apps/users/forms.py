@@ -1,4 +1,6 @@
 # coding=utf-8
+from users.models import UserProfile
+
 __author__ = 'lihao'
 __date__ = '2017/2/20 12:40'
 
@@ -27,3 +29,15 @@ class ModifyPasswordForm(forms.Form):
     password2 = forms.CharField(required=True, min_length=5)
 
 
+class UploadImageForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields =['image']
+
+
+
+
+class UserInfoUpdateForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields =['nick_name','gender','birthday','address','mobile']
