@@ -1,16 +1,18 @@
 # coding=utf-8
 import json
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.hashers import make_password
 from django.db.models import Q
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from pure_pagination import Paginator, PageNotAnInteger
 from django.views.generic import View
 
 from courses.models import Course
-from operation.models import UserCourse, UserFavorite
+from operation.models import UserCourse, UserFavorite, UserMessage
 from organization.models import CourseOrg, Teacher
 from users.forms import LoginForm, RegisterForm, ForgetForm, ModifyPasswordForm, \
     UploadImageForm, UserInfoUpdateForm
@@ -49,6 +51,11 @@ class RegisterView(View):
             user_profile.password = make_password(pass_word)
             user_profile.save()
 
+            user_message = UserMessage()
+            user_message.user = user_profile.id
+            user_message.message = '欢迎光临'
+            user_message.save()
+
             send_register_email(user_name, 'register')
             return render(request, "login.html",{{'msg':'请先登录您的邮箱，激活账号'}})
         else:
@@ -77,7 +84,11 @@ class LoginView(View):
             return render(request, 'login.html', {'login_form': login_forms})
 
 
-            # Create your views here.
+class LogoutView(View):
+    def get(self,request):
+        logout(request)
+        from django.core.urlresolvers import reverse
+        return HttpResponseRedirect(reverse('index'))
 
 
 class ActiveUserView(View):
@@ -281,3 +292,19 @@ class MyFavCourseView(LoginRequiredMixin, View):
             course_list.append(course)
         return render(request, 'usercenter-fav-course.html',
                       dict(course_list=course_list))
+
+
+class MyessageView(LoginRequiredMixin,View):
+
+    def get(self,request):
+        all_message = UserMessage.objects.filter(user=request.user.id)
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+
+        p = Paginator(all_message, 3, request=request)
+
+        message = p.page(page)
+        return render(request,'usercenter-message.html',dict(message=message))
+

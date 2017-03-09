@@ -46,7 +46,7 @@
                                 </dl>
                                 <div class="btn">
                                     <a class="personcenter fl" href="{% url 'user:user_info' %}">进入个人中心</a>
-                                    <a class="fr" href="/logout/">退出</a>
+                                    <a class="fr" href="{% url 'logout' %}">退出</a>
                                 </div>
                             </div>
                         </div>
@@ -101,7 +101,7 @@
                 <li><a href="{% url 'user:my_course' %}">我的课程</a></li>
                 <li><a href="{% url 'user:myfav_org' %}">我的收藏</a></li>
                 <li>
-                    <a href="usercenter-message.html"
+                    <a href="{% url 'user:mymessage' %}"
                        style="position: relative;">
                         我的消息
                     </a>
