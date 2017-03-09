@@ -25,9 +25,9 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'extra_apps'))
 SECRET_KEY = '2j-15#7&58t1se_tpv8t57-kwz+$5!+66nb2*cgl6xy4ry!*_^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -151,3 +151,5 @@ PAGINATION_SETTINGS = {
     'MARGIN_PAGES_DISPLAYED': 2,
     'SHOW_FIRST_PAGE_WHEN_INVALID': True,
 }
+
+STATIC_ROOT = os.path.join(BASE_DIR,'static')

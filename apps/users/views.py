@@ -4,19 +4,20 @@ import json
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.hashers import make_password
+from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from pure_pagination import Paginator, PageNotAnInteger
 from django.views.generic import View
+from pure_pagination import Paginator, PageNotAnInteger
 
 from courses.models import Course
 from operation.models import UserCourse, UserFavorite, UserMessage
 from organization.models import CourseOrg, Teacher
 from users.forms import LoginForm, RegisterForm, ForgetForm, ModifyPasswordForm, \
     UploadImageForm, UserInfoUpdateForm
-from users.models import UserProfile, EmailVerifyRecord
+from users.models import UserProfile, EmailVerifyRecord, Banner
 from utils.email_send import send_register_email
 from utils.mixin_utils import LoginRequiredMixin
 
@@ -35,14 +36,16 @@ class CustomBackend(ModelBackend):
 class RegisterView(View):
     def get(self, request):
         register_form = RegisterForm()
-        return render(request, 'register.html', {'register_form': register_form})
+        return render(request, 'register.html',
+                      {'register_form': register_form})
 
     def post(self, request):
         register_form = RegisterForm(request.POST)
         if register_form.is_valid():
             user_name = request.POST.get('email', '')
             if UserProfile.objects.filter(email=user_name):
-                return render(request, 'register.html', {'msg': '用户已存在！', 'register_form': register_form})
+                return render(request, 'register.html',
+                              {'msg': '用户已存在！', 'register_form': register_form})
             pass_word = request.POST.get('password', '')
             user_profile = UserProfile()
             user_profile.username = user_name
@@ -57,9 +60,10 @@ class RegisterView(View):
             user_message.save()
 
             send_register_email(user_name, 'register')
-            return render(request, "login.html",{{'msg':'请先登录您的邮箱，激活账号'}})
+            return render(request, "login.html", {{'msg': '请先登录您的邮箱，激活账号'}})
         else:
-            return render(request, "register.html", {'register_form': register_form})
+            return render(request, "register.html",
+                          {'register_form': register_form})
 
 
 class LoginView(View):
@@ -75,7 +79,7 @@ class LoginView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return render(request, "index.html")
+                    return HttpResponseRedirect(reverse('index'))
                 else:
                     return render(request, 'login.html', {'msg': '用户未激活'})
             else:
@@ -85,9 +89,8 @@ class LoginView(View):
 
 
 class LogoutView(View):
-    def get(self,request):
+    def get(self, request):
         logout(request)
-        from django.core.urlresolvers import reverse
         return HttpResponseRedirect(reverse('index'))
 
 
@@ -263,7 +266,7 @@ class MyCourseView(LoginRequiredMixin, View):
 class MyFavOrgView(LoginRequiredMixin, View):
     def get(self, request):
         org_list = []
-        fav_orgs = UserFavorite.objects.filter(user=request.user,fav_type=2)
+        fav_orgs = UserFavorite.objects.filter(user=request.user, fav_type=2)
         for fav_org in fav_orgs:
             org_id = fav_org.fav_id
             org = CourseOrg.objects.get(id=org_id)
@@ -271,10 +274,12 @@ class MyFavOrgView(LoginRequiredMixin, View):
         return render(request, 'usercenter-fav-org.html',
                       dict(org_list=org_list))
 
+
 class MyFavTeacherView(LoginRequiredMixin, View):
     def get(self, request):
         teacher_list = []
-        fav_teachers = UserFavorite.objects.filter(user=request.user,fav_type=3)
+        fav_teachers = UserFavorite.objects.filter(user=request.user,
+                                                   fav_type=3)
         for fav_teacher in fav_teachers:
             teacher_id = fav_teacher.fav_id
             teacher = Teacher.objects.get(id=teacher_id)
@@ -282,10 +287,11 @@ class MyFavTeacherView(LoginRequiredMixin, View):
         return render(request, 'usercenter-fav-teacher.html',
                       dict(teacher_list=teacher_list))
 
+
 class MyFavCourseView(LoginRequiredMixin, View):
     def get(self, request):
         course_list = []
-        fav_courses = UserFavorite.objects.filter(user=request.user,fav_type=1)
+        fav_courses = UserFavorite.objects.filter(user=request.user, fav_type=1)
         for fav_course in fav_courses:
             course_id = fav_course.fav_id
             course = Course.objects.get(id=course_id)
@@ -294,9 +300,8 @@ class MyFavCourseView(LoginRequiredMixin, View):
                       dict(course_list=course_list))
 
 
-class MyessageView(LoginRequiredMixin,View):
-
-    def get(self,request):
+class MyessageView(LoginRequiredMixin, View):
+    def get(self, request):
         all_message = UserMessage.objects.filter(user=request.user.id)
         try:
             page = request.GET.get('page', 1)
@@ -306,5 +311,32 @@ class MyessageView(LoginRequiredMixin,View):
         p = Paginator(all_message, 3, request=request)
 
         message = p.page(page)
-        return render(request,'usercenter-message.html',dict(message=message))
+        return render(request, 'usercenter-message.html', dict(message=message))
 
+
+class IndexView(View):
+    #         index View
+    def get(self, request):
+        banners = Banner.objects.all().order_by('-index')
+        course = Course.objects.filter(is_banner=False)[:6]
+        banners_course = Course.objects.filter(is_banner=False)[:3]
+        course_orgs = CourseOrg.objects.all()
+        return render(request, 'index.html', dict(banners=banners,
+                                                  course=course,
+                                                  banners_course=banners_course,
+                                                  course_orgs=course_orgs
+                                                  ))
+
+
+def page_not_found(request):
+    from django.shortcuts import render_to_response
+    response = render_to_response('404.html', dict())
+    response.status_code = 404
+    return response
+
+
+def page_error(request):
+    from django.shortcuts import render_to_response
+    response = render_to_response('500.html', dict())
+    response.status_code = 500
+    return response

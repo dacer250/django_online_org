@@ -19,7 +19,7 @@
     <section>
         <div class="wp">
             <ul class="crumbs">
-                <li><a href="index.html">首页</a>></li>
+                <li><a href="{% url 'index' %}">首页</a>></li>
                 <li><a href="{% url 'course:course_list' %}">课程</a>></li>
                 <li><a href="{% url 'course:course_detail' course.id %}">详情信息</a>></li>
                 <li>详情</li>

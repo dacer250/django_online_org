@@ -96,7 +96,7 @@
 <section>
     <div class="wp">
         <ul class="crumbs">
-            <li><a href="index.html">首页</a>></li>
+            <li><a href="{% url 'index' %}">首页</a>></li>
             <li><a href="{% url 'org:org_list' %}">课程机构</a>></li>
             <li>{% block page_path %}机构首页{% endblock %}</li>
         </ul>
@@ -121,12 +121,12 @@
             <div class="right companycenter layout grouping">
                 <div class="head">
                     <h1>全部课程</h1>
-                    <a class="green fr more" href="org-detail-course.html">查看更多 > </a>
+                    <a class="green fr more" href="{% url 'org:org_list' %}">查看更多 > </a>
                 </div>
                 <div class="brief group_list">
 
                     <div class="module1_5 box">
-                        <a href="course-detail.html"><img width="214"
+                        <a href="{% url 'org:org_list' %}"><img width="214"
                                                           src="{% static 'media/courses/2016/11/mysql.jpg' %}"/></a>
                         <div class="des">
                             <a href="course-detail.html"><h2>django入门</h2></a>

@@ -8,7 +8,7 @@ Function views
     1. Add an import:  from my_app import views
     2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
 Class-based views
-    1. Add an import:  from other_app.views import Home
+    # 1. Add an import:  from other_app.views import Home
     2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
 Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
@@ -19,13 +19,13 @@ from django.views.generic import TemplateView
 from django.views.static import serve
 
 import xadmin
-from mxonline.settings import MEDIA_ROOT
+from mxonline.settings import MEDIA_ROOT, STATIC_ROOT
 from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetView, ModifyView, \
-    LogoutView
+    LogoutView, IndexView
 
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
-    url('^$', TemplateView.as_view(template_name='index.html'), name='index'),
+    url('^$', IndexView.as_view(), name='index'),
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^register/$', RegisterView.as_view(), name='register'),
@@ -38,9 +38,15 @@ urlpatterns = [
     url(r'^org/', include('organization.urls', namespace='org')),
     # 处理配置上传文件函数
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
+    url(r'^static/(?P<path>.*)$', serve, {"document_root": STATIC_ROOT}),
+
+    #
     url(r'^course/', include('courses.urls', namespace='course')),
     url(r'^user/', include('users.urls', namespace='user')),
 
 
 
 ]
+
+handler404 = 'user.view.page_not_found'
+handler505 = 'user.view.page_error'
