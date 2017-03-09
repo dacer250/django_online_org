@@ -1,6 +1,7 @@
 # coding=utf-8
 from users.views import UserInfoView, UploadImageView, UpdatePwdViw, \
-    SendEmailCodeView, UpdateEmailView, MyCourseView, MyFavOrgView
+    SendEmailCodeView, UpdateEmailView, MyCourseView, MyFavOrgView, \
+    MyFavTeacherView
 
 __author__ = 'lihao'
 __date__ = '2017/3/7 15:43'
@@ -15,5 +16,6 @@ urlpatterns = [
     url(r'^update_email/$', UpdateEmailView.as_view(), name='update_email'),
     url(r'^my_course/$', MyCourseView.as_view(), name='my_course'),
     url(r'^myfav/org/$', MyFavOrgView.as_view(), name='myfav_org'),
+    url(r'^myfav/teacher/$', MyFavTeacherView.as_view(), name='myfav_teacher'),
 
 ]

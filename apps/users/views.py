@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.views.generic import View
 
 from operation.models import UserCourse, UserFavorite
-from organization.models import CourseOrg
+from organization.models import CourseOrg, Teacher
 from users.forms import LoginForm, RegisterForm, ForgetForm, ModifyPasswordForm, \
     UploadImageForm, UserInfoUpdateForm
 from users.models import UserProfile, EmailVerifyRecord
@@ -259,4 +259,13 @@ class MyFavOrgView(LoginRequiredMixin, View):
         return render(request, 'usercenter-fav-org.html',
                       dict(org_list=org_list))
 
-
+class MyFavTeacherView(LoginRequiredMixin, View):
+    def get(self, request):
+        teacher_list = []
+        fav_teachers = UserFavorite.objects.filter(user=request.user,fav_type=3)
+        for fav_teacher in fav_teachers:
+            teacher_id = fav_teacher.fav_id
+            teacher = Teacher.objects.get(id=teacher_id)
+            teacher_list.append(teacher)
+        return render(request, 'usercenter-fav-teacher.html',
+                      dict(teacher_list=teacher_list))
