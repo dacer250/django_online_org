@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import View
 
+from courses.models import Course
 from operation.models import UserCourse, UserFavorite
 from organization.models import CourseOrg, Teacher
 from users.forms import LoginForm, RegisterForm, ForgetForm, ModifyPasswordForm, \
@@ -269,3 +270,14 @@ class MyFavTeacherView(LoginRequiredMixin, View):
             teacher_list.append(teacher)
         return render(request, 'usercenter-fav-teacher.html',
                       dict(teacher_list=teacher_list))
+
+class MyFavCourseView(LoginRequiredMixin, View):
+    def get(self, request):
+        course_list = []
+        fav_courses = UserFavorite.objects.filter(user=request.user,fav_type=1)
+        for fav_course in fav_courses:
+            course_id = fav_course.fav_id
+            course = Course.objects.get(id=course_id)
+            course_list.append(course)
+        return render(request, 'usercenter-fav-course.html',
+                      dict(course_list=course_list))

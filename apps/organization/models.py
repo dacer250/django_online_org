@@ -24,7 +24,8 @@ class CityDict(models.Model):
 class CourseOrg(models.Model):
     name = models.CharField(max_length=50, verbose_name=u'机构名称')
     desc = models.TextField(verbose_name=u'机构描述')
-    category = models.CharField(max_length=20, choices=(('pxjg', '培新机构'), ('gx', '高校'), ('gr', '个人')),
+    category = models.CharField(max_length=20, choices=(
+    ('pxjg', '培新机构'), ('gx', '高校'), ('gr', '个人')),
                                 verbose_name='机构类别')
     click_nums = models.IntegerField(default=0, verbose_name=u'点击数')
     fav_nums = models.IntegerField(default=0, verbose_name=u'收藏人数')
@@ -56,9 +57,9 @@ class Teacher(models.Model):
     click_nums = models.IntegerField(default=0, verbose_name=u'点击数')
     age = models.IntegerField(default=0, verbose_name=u'年龄')
 
-
     add_time = models.DateTimeField(default=datetime.now, verbose_name=u'添加时间')
-    image = models.ImageField(upload_to='teacher/%Y/%m', verbose_name=u'头像', max_length=100,default='')
+    image = models.ImageField(upload_to='teacher/%Y/%m', verbose_name=u'头像',
+                              max_length=100, default='')
 
     class Meta:
         verbose_name = u'教师'
