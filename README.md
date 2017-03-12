@@ -2,7 +2,7 @@
 django_test
 ## 功能 
 #### 功能介绍如图
-    ![image](https://github.com/koeelio/mxonline/media/WechatIMG5097.jpeg)
+    ![image](https://github.com/koeelio/django_online_org/blob/master/media/WechatIMG5097.jpeg)
 ##项目遇坑
 ####  django.db.utils.OperationalError: (1060, "Duplicate column name
 
