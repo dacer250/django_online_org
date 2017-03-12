@@ -1,6 +1,8 @@
-# django_test
+# django_online_org
 django_test
-
+## 功能 
+#### 功能介绍如图
+    ![image](https://github.com/koeelio/mxonline/media/WechatIMG5097.jpeg)
 ##项目遇坑
 ####  django.db.utils.OperationalError: (1060, "Duplicate column name
 
@@ -16,3 +18,4 @@ django_test
   __import__(name)
   
 遇到关于template的报错，使用chrome的DevTool，观察Console报错。确定bug位置，由于ajax不熟练，遇到不少次js代码报错！
+
