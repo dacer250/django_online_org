@@ -1,5 +1,7 @@
 # django_online_org
-django_test
+python == '2.7.10'
+django == '1.9.8'
+![link](https://github.com/sshwsfc/xadmin)xadmin == '0.5.0'
 ## 功能 
 #### 功能介绍如图
     ![image](https://github.com/koeelio/django_online_org/blob/master/media/WechatIMG5097.jpeg)
